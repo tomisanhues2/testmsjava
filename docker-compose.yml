@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: meydey
+      MONGO_INITDB_ROOT_PASSWORD: meydeymeydey
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@localhost:27017/geoServices
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
