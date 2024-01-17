@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.chat.ChatDataService;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.chat.ChatMessageData;
 import com.meydey.MeydeyRTGeoMS.websocket.ActionHandler;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCategory;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import com.meydey.MeydeyRTGeoMS.websocket.subscription.SubscriptionService;
@@ -42,6 +43,7 @@ public class ChatSendActionHandler implements ActionHandler {
 
             ResponseData responseData = new ResponseData();
             responseData.setCode(ResponseCode.SUCCESS.getCode());
+            responseData.setCategory(ResponseCategory.CHAT.getCategory());
             responseData.setMessage(ResponseCode.SUCCESS.getMessage());
             responseData.setData(chatData);
 

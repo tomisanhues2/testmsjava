@@ -6,20 +6,24 @@ public class ResponseData {
 
     private String code;
     private String message;
+
+    private String category;
     private Object data;
 
     public ResponseData() {
     }
 
 
-    public ResponseData(String code, String message, Object data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
-
     public String getCode() {
         return code;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public void setCode(String code) {
@@ -52,14 +56,6 @@ public class ResponseData {
     }
 
 
-    @Override
-    public String toString() {
-        return "{" +
-                "\"code\":\"" + code + "\"," +
-                "\"message\":\"" + message + "\"," +
-                "\"data\":\"" + data + "\"" +
-                '}';
-    }
 
 
 }

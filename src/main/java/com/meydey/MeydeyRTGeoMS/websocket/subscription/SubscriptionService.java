@@ -3,6 +3,7 @@ package com.meydey.MeydeyRTGeoMS.websocket.subscription;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.DestinationData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionDataRepository;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCategory;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class SubscriptionService {
                 ResponseData responseData = new ResponseData();
                 responseData.setCode(ResponseCode.SUCCESS.getCode());
                 responseData.setMessage(ResponseCode.SUCCESS.getMessage());
+                responseData.setCategory(ResponseCategory.SYSTEM.getCategory());
                 responseData.setData("You are now subscribed to appointment " + id + ".");
                 session.sendMessage(new TextMessage(responseData.toString()));
             } catch (IOException e) {
