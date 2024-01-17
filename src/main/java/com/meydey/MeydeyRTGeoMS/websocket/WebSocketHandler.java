@@ -2,6 +2,7 @@ package com.meydey.MeydeyRTGeoMS.websocket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCategory;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
 import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import com.meydey.MeydeyRTGeoMS.websocket.subscription.SubscriptionService;
@@ -40,6 +41,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             ResponseData responseData = new ResponseData();
             responseData.setCode(ResponseCode.INVALID_JSON.getCode());
             responseData.setMessage(ResponseCode.INVALID_JSON.getMessage());
+            responseData.setCategory(ResponseCategory.SYSTEM.getCategory());
             responseData.setData("Invalid JSON.");
             session.sendMessage(new TextMessage(responseData.toJson()));
             return;

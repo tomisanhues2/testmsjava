@@ -8,6 +8,9 @@ import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.DestinationData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionDataRepository;
 import com.meydey.MeydeyRTGeoMS.websocket.ActionHandler;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCategory;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import com.meydey.MeydeyRTGeoMS.websocket.subscription.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,11 +38,11 @@ public class GeoUpdateActionHandler implements ActionHandler {
 
             Optional<SubscriptionData> existingSubscriptionDataOpt = subscriptionDataRepository.findById(geoRequest.getAppointmentId());
 
-
+            GeoData newGeoData = new GeoData();
             if (existingSubscriptionDataOpt.isPresent()) {
                 SubscriptionData subscriptionData = existingSubscriptionDataOpt.get();
 
-                GeoData newGeoData = new GeoData();
+                newGeoData = new GeoData();
                 newGeoData.setUserId(geoRequest.getUserId());
                 newGeoData.setLatitude(geoRequest.getLatitude());
                 newGeoData.setLongitude(geoRequest.getLongitude());
@@ -61,10 +64,15 @@ public class GeoUpdateActionHandler implements ActionHandler {
 
             double distance = GeoUtils.calculateDistanceInMeters(geoRequest.getLatitude(), geoRequest.getLongitude(),
                     destination.getLatitude(), destination.getLongitude());
-            subscriptionService.sendMessageToSubscribers(geoRequest.getAppointmentId(), new TextMessage(jsonData.getBytes()));
-
+            if (newGeoData != null) {
+                ResponseData responseData = new ResponseData();
+                responseData.setCode(ResponseCode.SUCCESS.getCode());
+                responseData.setCategory(ResponseCategory.GEO.getCategory());
+                responseData.setMessage(ResponseCode.SUCCESS.getMessage());
+                responseData.setData(newGeoData);
+                subscriptionService.sendMessageToSubscribers(geoRequest.getAppointmentId(), responseData);
+            }
             System.out.println("Distance: " + distance);
-
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
