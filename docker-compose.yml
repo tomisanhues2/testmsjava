@@ -8,16 +8,24 @@ services:
       MONGO_INITDB_ROOT_USERNAME: meydey
       MONGO_INITDB_ROOT_PASSWORD: meydeymeydey
     volumes:
-      - mongodb_data:/data/db
+      - mongodb-data:/data/db
 
   app:
     build: .
-    ports:
-      - "80:80"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@localhost:27017/geoServices
+      SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@mongodb/geoServices
     depends_on:
       - mongodb
 
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+
 volumes:
-  mongodb_data:
+  mongodb-data:
