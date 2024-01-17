@@ -1,6 +1,7 @@
 FROM openjdk:17
 
-COPY build/libs/MeydeyRTGeoMS-0.0.1-SNAPSHOT.jar app.jar
+# Copy the jar file into the container
+COPY build/libs/MeydeyRTGeoMS-0.0.1-SNAPSHOT.jar /app.jar
 
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]

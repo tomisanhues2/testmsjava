@@ -14,17 +14,10 @@ services:
     build: .
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@mongodb/geoServices
+    ports:
+        - "80:8080"
     depends_on:
       - mongodb
-
-  nginx:
-    image: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - app
 
 
 volumes:

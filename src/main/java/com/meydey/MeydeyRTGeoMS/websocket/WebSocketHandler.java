@@ -15,8 +15,8 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private ObjectMapper objectMapper;
-    private SubscriptionService subscriptionService;
+    private final ObjectMapper objectMapper;
+    private final SubscriptionService subscriptionService;
 
     public WebSocketHandler(ObjectMapper objectMapper, SubscriptionService subscriptionService) {
         this.objectMapper = objectMapper;
@@ -106,8 +106,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
             if (hex.length() == 1) {
                 hexString.append('0');
             }
