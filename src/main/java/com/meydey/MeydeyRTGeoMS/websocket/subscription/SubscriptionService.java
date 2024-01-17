@@ -56,7 +56,7 @@ public class SubscriptionService {
                 responseData.setMessage(ResponseCode.SUCCESS.getMessage());
                 responseData.setCategory(ResponseCategory.SYSTEM.getCategory());
                 responseData.setData("You are now subscribed to appointment " + id + ".");
-                session.sendMessage(new TextMessage(responseData.toString()));
+                session.sendMessage(new TextMessage(responseData.toJson()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

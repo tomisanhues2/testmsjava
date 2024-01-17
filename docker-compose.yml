@@ -13,7 +13,7 @@ services:
   app:
     build: .
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@mongodb/geoServices
+      SPRING_DATA_MONGODB_URI: mongodb://meydey:meydeymeydey@mongodb/admin
     ports:
         - "80:8080"
     depends_on:
