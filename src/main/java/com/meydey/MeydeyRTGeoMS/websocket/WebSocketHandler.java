@@ -2,6 +2,8 @@ package com.meydey.MeydeyRTGeoMS.websocket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import com.meydey.MeydeyRTGeoMS.websocket.subscription.SubscriptionService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -35,7 +37,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
             rootNode = objectMapper.readTree(jsonMessage);
         } catch (Exception e) {
             // Handle invalid JSON
-            System.out.println("Invalid JSON detected");
+            ResponseData responseData = new ResponseData();
+            responseData.setCode(ResponseCode.INVALID_JSON.getCode());
+            responseData.setMessage(ResponseCode.INVALID_JSON.getMessage());
+            responseData.setData("Invalid JSON.");
+            session.sendMessage(new TextMessage(responseData.toJson()));
             return;
         }
 
@@ -64,7 +70,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String appointmentId = data.path("appointmentId").asText();
         if (appointmentId == null) {
             // Handle invalid appointmentId
-            System.out.println("Invalid appointmentId detected");
+            ResponseData responseData = new ResponseData();
+            responseData.setCode(ResponseCode.INVALID_REQUEST.getCode());
+            responseData.setMessage(ResponseCode.INVALID_REQUEST.getMessage());
+            responseData.setData("Invalid appointmentId.");
+            // Send a message to the user that they are not subscribed to the appointmentId
+            session.sendMessage(new TextMessage(responseData.toJson()));
             return;
         }
         switch (action) {
@@ -78,9 +89,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         // Check if the user is subscribed to the provided appointmentId, if not, do not process the message
         if (!subscriptionService.isSubscribed(appointmentId, session)) {
-            System.out.println("User is not subscribed to appointmentId: " + appointmentId);
+            ResponseData responseData = new ResponseData();
+            responseData.setCode(ResponseCode.INVALID_REQUEST.getCode());
+            responseData.setMessage(ResponseCode.INVALID_REQUEST.getMessage());
+            responseData.setData("You are not subscribed to appointment " + appointmentId + ".");
             // Send a message to the user that they are not subscribed to the appointmentId
-            session.sendMessage(new TextMessage("You are not subscribed to appointmentId: " + appointmentId));
+            session.sendMessage(new TextMessage(responseData.toJson()));
 
             return;
         }

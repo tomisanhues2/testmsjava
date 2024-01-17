@@ -3,6 +3,8 @@ package com.meydey.MeydeyRTGeoMS.websocket.subscription;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.DestinationData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionData;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.sub.SubscriptionDataRepository;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,9 @@ public class SubscriptionService {
 
                 // Make REST API call to get destination location
                 DestinationData destinationData = fetchDestinationLocationFromApi(id);
+                if (destinationData == null) {
+                    destinationData = new DestinationData();
+                }
                 subscriptionData.setDestinationData(destinationData);
 
                 subscriptionDataRepository.save(subscriptionData);
@@ -44,7 +49,12 @@ public class SubscriptionService {
                 subscriptionData.getActiveSessions().add(session);
             }
             try {
-                session.sendMessage(new TextMessage("You are now subscribed to appointment " + id + "."));
+
+                ResponseData responseData = new ResponseData();
+                responseData.setCode(ResponseCode.SUCCESS.getCode());
+                responseData.setMessage(ResponseCode.SUCCESS.getMessage());
+                responseData.setData("You are now subscribed to appointment " + id + ".");
+                session.sendMessage(new TextMessage(responseData.toString()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -86,7 +96,7 @@ public class SubscriptionService {
                 return destinationData;
             } else {
                 // Handle the case where the response body is null
-                return new DestinationData();
+                return null;
             }
         } catch (Exception e) {
             // Handle exception
@@ -124,6 +134,21 @@ public class SubscriptionService {
                 if (session.isOpen()) {
                     try {
                         session.sendMessage(message);
+                    } catch (IOException e) {
+                        // Handle exception
+                    }
+                }
+            }
+        }
+    }
+
+    public void sendMessageToSubscribers(String id, ResponseData data) {
+        SubscriptionData subscriptionData = subscriptions.get(id);
+        if (subscriptionData != null) {
+            for (WebSocketSession session : subscriptionData.getActiveSessions()) {
+                if (session.isOpen()) {
+                    try {
+                        session.sendMessage(new TextMessage(data.toJson()));
                     } catch (IOException e) {
                         // Handle exception
                     }

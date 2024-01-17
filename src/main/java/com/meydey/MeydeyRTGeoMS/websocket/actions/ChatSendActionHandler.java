@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.chat.ChatDataService;
 import com.meydey.MeydeyRTGeoMS.mongodb.data.chat.ChatMessageData;
 import com.meydey.MeydeyRTGeoMS.websocket.ActionHandler;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseCode;
+import com.meydey.MeydeyRTGeoMS.websocket.data.ResponseData;
 import com.meydey.MeydeyRTGeoMS.websocket.subscription.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,11 +39,15 @@ public class ChatSendActionHandler implements ActionHandler {
 
 
             // Construct the output message object
-            String outputMessage = objectMapper.writeValueAsString(chatData);
-            TextMessage textMessage = new TextMessage(outputMessage);
+
+            ResponseData responseData = new ResponseData();
+            responseData.setCode(ResponseCode.SUCCESS.getCode());
+            responseData.setMessage(ResponseCode.SUCCESS.getMessage());
+            responseData.setData(chatData);
+
 
             // Send the message to all active sessions
-            subscriptionService.sendMessageToSubscribers(appointmentId, textMessage);
+            subscriptionService.sendMessageToSubscribers(appointmentId, responseData);
 
 
         } catch (Exception e) {
