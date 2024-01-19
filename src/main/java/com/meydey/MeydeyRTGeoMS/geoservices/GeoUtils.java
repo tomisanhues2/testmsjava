@@ -22,5 +22,9 @@ public class GeoUtils {
     public static double haversin(double val) {
         return Math.pow(Math.sin(val / 2), 2);
     }
+
+
+
+
 }
 

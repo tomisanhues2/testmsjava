@@ -72,6 +72,7 @@ public class GeoUpdateActionHandler implements ActionHandler {
                 responseData.setData(newGeoData);
                 subscriptionService.sendMessageToSubscribers(geoRequest.getAppointmentId(), responseData);
             }
+
             System.out.println("Distance: " + distance);
 
         } catch (JsonProcessingException e) {
